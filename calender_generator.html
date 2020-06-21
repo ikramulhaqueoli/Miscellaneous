@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<title>
+
+		</title>
+		<script type="text/javascript">
+			function generateCalender()
+			{
+				var selectedYear = document.getElementById('year_input').value;
+				if(selectedYear < 1600 || selectedYear > 9999) return;
+				//calculating number of days considering leap-years
+				var noOfYearsFrom1600 = selectedYear - 1600;
+				var noOfDaysFrom1600 = (noOfYearsFrom1600 * 365) + Math.floor((noOfYearsFrom1600-1) / 4 + 1) + Math.floor((noOfYearsFrom1600-1) / 400 + 1) - Math.floor((noOfYearsFrom1600-1) / 100 + 1);
+				//alert(noOfDaysFrom1600);
+
+				var dayNames = ['SAT','SUN','MON','TUE','WED','THU','FRI'];
+				var firstDayOfSelectedYear = noOfDaysFrom1600%7;
+
+				//generate HTML Calender
+				var dayCounts = [-1,31,28,31,30,31,30,31,31,30,31,30,31];	//considering 0th index invalid
+				if(selectedYear % 400 == 0 || (selectedYear % 100 != 0 && selectedYear % 4 == 0)) dayCounts[2] = 29;
+				var monthNames = [-1,'JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+
+				var generatedHtmlCalender = "<tr><h2><b>Calender | " + selectedYear + "</b></h2></tr>";
+				generatedHtmlCalender += "<table>";
+				var today = firstDayOfSelectedYear;
+				for(var month = 1; month <= 12; month++)
+				{
+					if(month % 3 == 1) generatedHtmlCalender += "<td>&nbsp &nbsp &nbsp</td><tr>";
+					generatedHtmlCalender += "<td><table>";
+					generatedHtmlCalender += "<tr><td colspan='7'> <center><b>" + monthNames[month] + "</b></center></td></tr>";
+					generatedHtmlCalender += "<tr>";
+					for(var day = 0; day < 7; day++)
+					{
+						generatedHtmlCalender += "<td>"+dayNames[day]+"</td>";
+					}
+					generatedHtmlCalender += "</tr>";
+					generatedHtmlCalender += "<tr>";
+					for(var i = 0; i < today; i++)
+					{
+						generatedHtmlCalender += "<td></td>";
+					}
+					for(var date = 1; date <= dayCounts[month]; date++)
+					{
+						generatedHtmlCalender += "<td>"+date+"</td>";
+						today = (today + 1) % 7;
+						if(today == 0) generatedHtmlCalender += "</tr><tr>";
+					}
+					for(var i = today; i < 6; i++)
+					{
+						generatedHtmlCalender += "<td></td>";
+					}
+					generatedHtmlCalender += "</tr>";
+					generatedHtmlCalender += "</table></td><td>&nbsp &nbsp &nbsp</td>";
+					if(month % 3 == 0) generatedHtmlCalender += "</tr>";
+				}
+				generatedHtmlCalender += "</table>";
+				document.getElementById('calender_div').innerHTML = generatedHtmlCalender;
+			}
+		</script>
+	</head>
+	<body>
+		<center>
+		<h2><label>Input a year: </label>
+		<input type="number" id = "year_input" onkeyup="generateCalender();"></h2>
+		<div id="calender_div">
+			<!-- here will be the azax html request hit -->
+		</div>
+		</center>
+	</body>
+</html>
